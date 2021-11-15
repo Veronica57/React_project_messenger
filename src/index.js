@@ -2,19 +2,24 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
-const ReactElement = (
-  <div>
-    <h1>Hello React</h1>
-  </div>
-);
+const message = <p>"Test message"</p>;
 
-const FunctionComponent = () => {
-  return ReactElement;
+const Message = (props) => {
+  return (
+    <div className="message">
+      <h1>Message</h1>
+      <p>Message: {message}</p>
+    </div>
+  );
 };
+
+function App() {
+  return <Message />;
+}
 
 ReactDOM.render(
   <React.StrictMode>
-    <FunctionComponent />
+    <App newMessage={message} />
   </React.StrictMode>,
   document.getElementById("root")
 );
