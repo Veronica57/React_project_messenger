@@ -2,7 +2,6 @@ import React, { useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import { useState } from "react";
-
 const App = () => {
   const [messages, setMessages] = useState([]);
   const [value, setValue] = useState("");
