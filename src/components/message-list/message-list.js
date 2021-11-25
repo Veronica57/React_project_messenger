@@ -1,42 +1,57 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Input, InputAdornment } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useStyles } from "./use-styles";
 import { Message } from "./message/index";
 
 export const MessageList = () => {
-  const [messages, setMessages] = useState([]);
+  const { roomId } = useParams();
+  const [messages, setMessages] = useState({});
   const [value, setValue] = useState("");
+
   const ref = useRef(null);
+  const refWrapper = useRef(null);
+
   const styles = useStyles();
 
-  useEffect(() => {
-    const lastMessages = messages[messages.length - 1];
-    let timerId = null;
-    if (messages.length && lastMessages.author !== "Bot") {
-      timerId = setTimeout(() => {
-        setMessages([
+  const sendMessage = useCallback(
+    (author = "User", botMessage) => {
+      if (value || botMessage) {
+        setMessages({
           ...messages,
-          { author: "Bot", message: "Hello from bot" },
-        ]);
+          [roomId]: [
+            ...(messages[roomId] ?? []),
+            { author, message: value || botMessage, date: new Date() },
+          ],
+        });
+        setValue("");
+      }
+    },
+    [messages, value, roomId]
+  );
+
+  useEffect(() => {
+    const roomMessages = messages[roomId] ?? [];
+    const lastMessages = roomMessages[roomMessages.length - 1];
+    let timerId = null;
+    if (roomMessages.length && lastMessages.author !== "Bot") {
+      timerId = setTimeout(() => {
+        sendMessage("Bot", "Hello from Bot");
       }, 500);
     }
     return () => clearInterval(timerId);
-  }, [messages]);
+  }, [messages, roomId, sendMessage]);
 
   useEffect(() => {
     ref.current?.focus();
   }, []);
 
-  const sendMessage = () => {
-    if (value) {
-      setMessages([
-        ...messages,
-        { author: "User", message: value, date: new Date() },
-      ]);
-      setValue("");
+  useEffect(() => {
+    if (refWrapper.current) {
+      refWrapper.current.scrollTo(0, refWrapper.current.scrollHeight);
     }
-  };
+  }, [messages]);
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
@@ -44,10 +59,12 @@ export const MessageList = () => {
     }
   };
 
+  const roomMessages = messages[roomId] ?? [];
+
   return (
-    <div className={styles.wrapper}>
-      {messages.map((message) => (
-        <Message message={message} />
+    <div ref={refWrapper} className={styles.wrapper}>
+      {roomMessages.map((message, index) => (
+        <Message message={message} key={index} />
       ))}
 
       <Input
