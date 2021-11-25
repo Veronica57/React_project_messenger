@@ -1,56 +1,41 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import { useState } from "react";
-const App = () => {
-  const [messages, setMessages] = useState([]);
-  const [value, setValue] = useState("");
-  const ref = useRef(null);
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { ChatPage } from "./pages";
+import { Header } from "./components";
 
-  useEffect(() => {
-    const lastMessages = messages[messages.length - 1];
-    let timerId = null;
-    if (messages.length && lastMessages.author !== "Bot") {
-      timerId = setTimeout(() => {
-        setMessages([
-          ...messages,
-          { author: "Bot", message: "Hello from bot" },
-        ]);
-      }, 500);
-    }
-    return () => clearInterval(timerId);
-  }, [messages]);
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
-
-  // const handleChangeValue = (e) => setValue(e.target.value);
-  const sendMessage = () => {
-    setMessages([...messages, { author: "User", message: value }]);
-    setValue("");
-  };
-
-  return (
-    <div>
-      {messages.map((message) => (
-        <div>{message.message}</div>
-      ))}
-
-      <input
-        ref={ref}
-        placeholder="enter your message"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <button onClick={sendMessage}>send message</button>
-    </div>
-  );
-};
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: "#58ab2b",
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <BrowserRouter>
+        <Header />
+        <Routes>
+          <Route path="/" element={<h1> Home page</h1>} />
+          <Route path="/chat/*" element={<ChatPage />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+// import PropTypes from "prop-types";
+// import styles from "./index.module.css";
+
+// App.PropTypes = {
+// test1: PropTypes.number.isRequired,
+// test2: PropTypes.string.isRequired,
+// test3: PropTypes.func.isRequired,
+// test4: PropTypes.shape(
+//   { id: PropTypes.number.isRequired,}
+// )
+// };
