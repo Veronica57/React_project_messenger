@@ -1,21 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider, createTheme } from "@mui/material";
 import { ChatPage } from "./pages";
 import { Header } from "./components";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#58ab2b",
-    },
-  },
-});
+import { CustomThemeProvider } from "./theme-context";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
+    <CustomThemeProvider>
       <BrowserRouter>
         <Header />
         <Routes>
@@ -23,7 +15,7 @@ ReactDOM.render(
           <Route path="/chat/*" element={<ChatPage />} />
         </Routes>
       </BrowserRouter>
-    </ThemeProvider>
+    </CustomThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

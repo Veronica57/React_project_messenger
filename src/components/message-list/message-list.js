@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
+import debounce from "lodash.debounce";
 import { Input, InputAdornment } from "@mui/material";
 import { Send } from "@mui/icons-material";
 import { useStyles } from "./use-styles";
@@ -9,10 +10,8 @@ export const MessageList = () => {
   const { roomId } = useParams();
   const [messages, setMessages] = useState({});
   const [value, setValue] = useState("");
-
   const ref = useRef(null);
   const refWrapper = useRef(null);
-
   const styles = useStyles();
 
   const sendMessage = useCallback(
@@ -53,11 +52,20 @@ export const MessageList = () => {
     }
   }, [messages]);
 
-  const handlePressInput = ({ code }) => {
+  useEffect(() => {
+    let block = refWrapper.current;
+    const cb = debounce(() => console.log("height", block?.scrollTop), 200);
+    if (block) {
+      block.addEventListener("scroll", cb);
+    }
+    return () => block?.removeEventListener("scroll", cb);
+  }, []);
+
+  function handlePressInput({ code }) {
     if (code === "Enter") {
       sendMessage();
     }
-  };
+  }
 
   const roomMessages = messages[roomId] ?? [];
 
