@@ -1,50 +1,35 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import debounce from "lodash.debounce";
+import { useParams, useNavigate } from "react-router-dom";
 import { Input, InputAdornment } from "@mui/material";
 import { Send } from "@mui/icons-material";
+import { Message } from "./message";
 import { useStyles } from "./use-styles";
-import { Message } from "./message/index";
+import { messagesSelector, sendMessage } from "../../store/messages";
+import { conversationsSelector } from "../../store/conversations";
+import { useDispatch, useSelector } from "react-redux";
 
 export const MessageList = () => {
   const { roomId } = useParams();
-  const [messages, setMessages] = useState({});
+  const navigate = useNavigate();
+  const styles = useStyles();
+  const messages = useSelector(messagesSelector(roomId));
+  const conversations = useSelector(conversationsSelector);
   const [value, setValue] = useState("");
+
+  const dispatch = useDispatch();
+
   const ref = useRef(null);
   const refWrapper = useRef(null);
-  const styles = useStyles();
 
-  const sendMessage = useCallback(
+  const send = useCallback(
     (author = "User", botMessage) => {
       if (value || botMessage) {
-        setMessages({
-          ...messages,
-          [roomId]: [
-            ...(messages[roomId] ?? []),
-            { author, message: value || botMessage, date: new Date() },
-          ],
-        });
+        dispatch(sendMessage({ author, message: value || botMessage }, roomId));
         setValue("");
       }
     },
-    [messages, value, roomId]
+    [value, roomId, dispatch]
   );
-
-  useEffect(() => {
-    const roomMessages = messages[roomId] ?? [];
-    const lastMessages = roomMessages[roomMessages.length - 1];
-    let timerId = null;
-    if (roomMessages.length && lastMessages.author !== "Bot") {
-      timerId = setTimeout(() => {
-        sendMessage("Bot", "Hello from Bot");
-      }, 500);
-    }
-    return () => clearInterval(timerId);
-  }, [messages, roomId, sendMessage]);
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
 
   useEffect(() => {
     if (refWrapper.current) {
@@ -53,46 +38,58 @@ export const MessageList = () => {
   }, [messages]);
 
   useEffect(() => {
-    let block = refWrapper.current;
-    const cb = debounce(() => console.log("height", block?.scrollTop), 200);
-    if (block) {
-      block.addEventListener("scroll", cb);
+    const isValidRoomId = conversations.includes(roomId);
+
+    if (!isValidRoomId && roomId) {
+      navigate("/chat");
     }
-    return () => block?.removeEventListener("scroll", cb);
+  }, [roomId, conversations, navigate]);
+
+  useEffect(() => {
+    const lastMessages = messages[messages.length - 1];
+    let timerId = null;
+
+    if (messages.length && lastMessages.author !== "Bot") {
+      timerId = setTimeout(() => {
+        send("Bot", "Hello from bot");
+      }, 200);
+    }
+
+    return () => clearInterval(timerId);
+  }, [messages, roomId, send]);
+
+  useEffect(() => {
+    ref.current?.focus();
   }, []);
 
-  function handlePressInput({ code }) {
+  const handlePressInput = ({ code }) => {
     if (code === "Enter") {
-      sendMessage();
+      send();
     }
-  }
-
-  const roomMessages = messages[roomId] ?? [];
+  };
 
   return (
-    <div ref={refWrapper} className={styles.wrapper}>
-      {roomMessages.map((message, index) => (
-        <Message message={message} key={index} />
-      ))}
+    <>
+      <div ref={refWrapper}>
+        {messages.map((message, index) => (
+          <Message message={message} key={index} />
+        ))}
+      </div>
 
       <Input
-        className={styles.input}
         fullWidth
+        className={styles.input}
         ref={ref}
-        placeholder="enter your message"
+        placeholder="enter message..."
         value={value}
-        // const handleChangeValue = (e) => setValue(e.target.value); //may create a function
         onChange={(e) => setValue(e.target.value)}
         onKeyPress={handlePressInput}
         endAdornment={
           <InputAdornment position="end">
-            <Send className={styles.icon} onClick={sendMessage} />
+            <Send className={styles.icon} onClick={send} />
           </InputAdornment>
         }
       />
-      {/* <Button onClick={sendMessage}>send message</Button> */}
-    </div>
+    </>
   );
 };
-
-// import styles from "./message-list.module.css";

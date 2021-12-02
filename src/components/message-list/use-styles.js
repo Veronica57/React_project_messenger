@@ -1,7 +1,6 @@
 import { makeStyles } from "@mui/styles";
 
 export const useStyles = makeStyles((ctx) => {
-  console.log(ctx);
   return {
     wrapper: {
       border: `1px solid ${ctx.palette.primary.main}`,

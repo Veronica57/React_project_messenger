@@ -1,14 +1,31 @@
-// import classnames from "classnames";
+import { format } from "date-fns";
+import classNames from "classnames";
+import { useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { withCounter } from "../../../hocs/with-counter";
+import { deleteMessageById } from "../../../store/messages";
+import styles from "./message.module.css";
+import { Button } from "@mui/material";
 
-// const className = classnames("class1", "class2", { botMessage: message.author == "Bot" });
+export const Message = withCounter(
+  ({ message, increment, decrement, count }) => {
+    const dispatch = useDispatch();
+    const { roomId } = useParams();
 
-export const Message = ({ message }) => {
-  return (
-    <div>
-      <div>{message.message}</div>
-      <div>{message.author}</div>
-      <div>12:25</div>
-      <hr />
-    </div>
-  );
-};
+    return (
+      <div
+        className={classNames(styles.message, {
+          [styles.currentMessage]: message.author === "User",
+        })}
+      >
+        <h3>{message.message}</h3>
+        <p>{message.author}</p>
+        <p>{format(message.date, "yyyy-MM-dd HH:MM:SS")}</p>
+
+        <Button onClick={() => dispatch(deleteMessageById(message.id, roomId))}>
+          Delete
+        </Button>
+      </div>
+    );
+  }
+);

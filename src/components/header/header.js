@@ -9,8 +9,6 @@ export function Header() {
     themeSetter,
   } = useContext(ThemeContext);
 
-  console.log("ctx", theme);
-
   return (
     <div className={styles.header}>
       <Link to="/">Home</Link>

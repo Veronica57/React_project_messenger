@@ -1,6 +1,6 @@
 .header {
   flex: none;
-  background-color: #17212b;
+  background-color: #657d94;
   border-bottom: 1px solid #000;
   height: 50px;
   display: flex;
@@ -9,5 +9,5 @@
 
 .header a {
   margin-right: 50px;
-  color: #fff;
+  color: rgb(216, 169, 169);
 }

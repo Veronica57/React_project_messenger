@@ -2,22 +2,30 @@ import { ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { AccountCircle } from "@mui/icons-material";
 import styles from "./chat.module.css";
+import { useNavigate } from "react-router";
+import { deleteConversation } from "../../../store/conversations";
 
 const useStyles = makeStyles(() => {
   return {
     item: {
       "&.Mui-selected": {
-        backgroundColor: "#2b5278",
+        backgroundColor: "#aab9c8",
       },
       "&.Mui-selected:hover": {
-        backgroundColor: "#2b5278",
+        backgroundColor: "#aab9c8",
       },
     },
   };
 });
 
-export function Chat({ title, selected, handleListItemClick }) {
+export function Chat({ title, selected, handleListItemClick, dispatch }) {
   const s = useStyles();
+  const navigate = useNavigate();
+
+  const deleteRoom = (e) => {
+    dispatch(deleteConversation(title));
+    setTimeout(() => navigate("/chat"), 200);
+  };
 
   return (
     <ListItem
@@ -27,6 +35,7 @@ export function Chat({ title, selected, handleListItemClick }) {
       onClick={handleListItemClick}
     >
       <ListItemIcon>
+        <button onClick={deleteRoom}>Delete</button>
         <AccountCircle fontSize="large" className={styles.icon} />
       </ListItemIcon>
       <div className={styles.description}>
