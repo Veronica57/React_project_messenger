@@ -2796,6 +2796,11 @@ axe-core@^4.0.2:
   resolved "https://registry.npmjs.org/axe-core/-/axe-core-4.1.2.tgz"
   integrity sha512-V+Nq70NxKhYt89ArVcaNL9FDryB3vQOd+BFXZIfO3RP6rwtj+2yqqqdHEkacutglPaZLkJeuXKCjCJDMGPtPqg==
 
+axis@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/axis/-/axis-1.0.0.tgz#956fa9b6a198cc97dc503c4f14e170ffae56ec17"
+  integrity sha1-lW+ptqGYzJfcUDxPFOFw/65W7Bc=
+
 axobject-query@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/axobject-query/-/axobject-query-2.2.0.tgz"

@@ -23,7 +23,7 @@ export const Message = withCounter(
         <p>{format(message.date, "yyyy-MM-dd HH:MM:SS")}</p>
 
         <Button onClick={() => dispatch(deleteMessageById(message.id, roomId))}>
-          Delete
+          X
         </Button>
       </div>
     );

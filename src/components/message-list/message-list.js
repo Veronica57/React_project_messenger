@@ -46,19 +46,6 @@ export const MessageList = () => {
   }, [roomId, conversations, navigate]);
 
   useEffect(() => {
-    const lastMessages = messages[messages.length - 1];
-    let timerId = null;
-
-    if (messages.length && lastMessages.author !== "Bot") {
-      timerId = setTimeout(() => {
-        send("Bot", "Hello from bot");
-      }, 200);
-    }
-
-    return () => clearInterval(timerId);
-  }, [messages, roomId, send]);
-
-  useEffect(() => {
     ref.current?.focus();
   }, []);
 
