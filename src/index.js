@@ -1,56 +1,61 @@
-import React, { useEffect, useRef } from "react";
+import React, { useState } from "react";
+import { PersistGate } from "redux-persist/integration/react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import { useState } from "react";
+import { Provider } from "react-redux";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Header } from "./components";
+import { ChatPage, ProfilePage } from "./pages";
+import { CustomThemeProvider } from "./theme-context";
+import { store, persistor } from "./store";
+// import { store } from "./store/my-redux";
+
+import "./palette.css";
+import "./global.css";
+
 const App = () => {
-  const [messages, setMessages] = useState([]);
-  const [value, setValue] = useState("");
-  const ref = useRef(null);
-
-  useEffect(() => {
-    const lastMessages = messages[messages.length - 1];
-    let timerId = null;
-    if (messages.length && lastMessages.author !== "Bot") {
-      timerId = setTimeout(() => {
-        setMessages([
-          ...messages,
-          { author: "Bot", message: "Hello from bot" },
-        ]);
-      }, 500);
-    }
-    return () => clearInterval(timerId);
-  }, [messages]);
-
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
-
-  // const handleChangeValue = (e) => setValue(e.target.value);
-  const sendMessage = () => {
-    setMessages([...messages, { author: "User", message: value }]);
-    setValue("");
-  };
+  const [count, setCount] = useState(0);
 
   return (
-    <div>
-      {messages.map((message) => (
-        <div>{message.message}</div>
-      ))}
+    <React.StrictMode>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <CustomThemeProvider>
+            <BrowserRouter>
+              {/* <button onClick={() => setCount(count + 1)}>setCount</button> */}
+              <Header count={count} />
 
-      <input
-        ref={ref}
-        placeholder="enter your message"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <button onClick={sendMessage}>send message</button>
-    </div>
+              <Routes>
+                <Route path="/" element={<h1>Home Page</h1>} />
+                <Route path="/chat/*" element={<ChatPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Routes>
+            </BrowserRouter>
+          </CustomThemeProvider>
+        </PersistGate>
+      </Provider>
+    </React.StrictMode>
   );
 };
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+ReactDOM.render(<App />, document.getElementById("root"));
+
+//
+//
+//
+//
+//
+//
+//
+//
+
+// import PropTypes from "prop-types";
+// import styles from "./index.module.css";
+
+// App.PropTypes = {
+// test1: PropTypes.number.isRequired,
+// test2: PropTypes.string.isRequired,
+// test3: PropTypes.func.isRequired,
+// test4: PropTypes.shape(
+//   { id: PropTypes.number.isRequired,}
+// )
+// };
