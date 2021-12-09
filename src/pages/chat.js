@@ -1,10 +1,14 @@
 import { useEffect, useContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Layout, ChatList, MessageList } from "../components";
 import { ThemeContext } from "../theme-context";
-import { MessageList, Layout, ChatList } from "../components";
+import { getConversationsFB } from "../store/conversations";
+import { getMessagesFB } from "../store/messages";
 
 export const ChatPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const {
     theme: { theme },
@@ -16,9 +20,17 @@ export const ChatPage = () => {
         navigate("/chat");
       }
     };
+
     document.addEventListener("keydown", listener);
-    return document.removeEventListener("keydown", listener);
+
+    return () => document.removeEventListener("keydown", listener);
   }, [navigate]);
+
+  useEffect(() => {
+    dispatch(getConversationsFB());
+    dispatch(getMessagesFB());
+  }, [dispatch]);
+
   return (
     <Routes>
       <Route
@@ -26,9 +38,7 @@ export const ChatPage = () => {
         element={
           <Layout
             chats={<ChatList />}
-            messages={
-              <h1 style={{ color: theme.color }}>Choose any chat...</h1>
-            }
+            messages={<h1 style={{ color: theme.color }}>выберите чат ...</h1>}
           />
         }
       />
@@ -38,5 +48,4 @@ export const ChatPage = () => {
       />
     </Routes>
   );
-  //   <Layout chats={<ChatList />} messages={<MessageList />} />;
 };

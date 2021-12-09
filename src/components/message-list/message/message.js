@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+// import { format } from "date-fns";
 import classNames from "classnames";
 import { withCounter } from "../../../hocs/with-counter";
 import { deleteMessageById } from "../../../store/messages";
@@ -14,11 +14,15 @@ export const Message = withCounter(
       >
         <h3>{message.message}</h3>
         <p>{message.author}</p>
-        <p>{format(new Date(message.date), "yyyy-MM-dd HH:MM:SS")}</p>
+        {/* <p>{format(new Date(message?.date), "yyyy-MM-dd HH:MM:SS")}</p> */}
 
         <button onClick={() => dispatch(deleteMessageById(message.id, roomId))}>
           X
         </button>
+        {/* <hr />
+        <span>{count}</span>
+        <button onClick={decrement}>decrement</button>
+        <button onClick={increment}>increment</button> */}
       </div>
     );
   }
