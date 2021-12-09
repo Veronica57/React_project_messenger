@@ -1,30 +1,33 @@
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, List } from "@mui/material";
-import { Chat } from "./chat";
+import { List } from "@mui/material";
 import {
   conversationsSelector,
   createConversation,
 } from "../../store/conversations";
+import { Chat } from "./chat";
 
 export const ChatList = () => {
   const { roomId } = useParams();
   const conversations = useSelector(conversationsSelector);
+
   const dispatch = useDispatch();
 
   const createConversationByName = () => {
-    const name = prompt("Enter chat room name");
+    const name = prompt("Введите название комнаты");
+
     const isValidName = !conversations.includes(name);
+
     if (name && isValidName) {
       dispatch(createConversation(name));
     } else {
-      alert("Invalid chat room name");
+      alert("не валидная комната");
     }
   };
 
   return (
     <List component="nav">
-      <Button onClick={createConversationByName}>Create</Button>
+      <button onClick={createConversationByName}>create</button>
       {conversations.map((chat) => (
         <Link key={chat.title} to={`/chat/${chat.title}`}>
           <Chat

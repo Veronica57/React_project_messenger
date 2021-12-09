@@ -14,6 +14,8 @@ export function Header() {
       <Link to="/">Home</Link>
       <Link to="/profile">Profile</Link>
       <Link to="/chat">Chat</Link>
+      <Link to="/gists">Gists</Link>
+
       <hr />
       <p style={{ color: theme.color }}>{name}</p>
       <button disabled={name === "dark"} onClick={() => themeSetter("dark")}>
