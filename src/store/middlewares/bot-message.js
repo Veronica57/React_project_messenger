@@ -1,5 +1,5 @@
-import { sendMessage } from "../messages";
 import { SEND_MESSAGE } from "../messages/types";
+import { sendMessage } from "../messages";
 
 export const botSendMessage = (store) => (next) => (action) => {
   if (
@@ -9,11 +9,12 @@ export const botSendMessage = (store) => (next) => (action) => {
     setTimeout(() => {
       store.dispatch(
         sendMessage(
-          { author: "Bot", message: "Hello from Bot" },
+          { author: "Bot", message: "Hello from bot" },
           action.payload.roomId
         )
       );
     }, 300);
   }
+
   return next(action);
 };
