@@ -9,11 +9,12 @@ export const Message = withCounter(
     return (
       <div
         className={classNames(styles.message, {
-          [styles.currentMessage]: message.author === "User",
+          [styles.currentMessage]: message.author !== "Bot",
         })}
       >
         <h3>{message.message}</h3>
         <p>{message.author}</p>
+        {/* @TODO добавить дату в бд */}
         {/* <p>{format(new Date(message?.date), "yyyy-MM-dd HH:MM:SS")}</p> */}
 
         <button onClick={() => dispatch(deleteMessageById(message.id, roomId))}>

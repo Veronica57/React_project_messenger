@@ -51,6 +51,7 @@ const App = () => {
   const [session, setSession] = useState(null);
 
   useEffect(() => {
+    // @TODO создать санк
     firebaseApp.auth().onAuthStateChanged((user) => {
       if (user) {
         setSession(user);
@@ -77,7 +78,7 @@ const App = () => {
                   path="/chat/*"
                   element={
                     <PrivateRoute isAuth={isAuth} to="/login">
-                      <ChatPage />
+                      <ChatPage session={session} />
                     </PrivateRoute>
                   }
                 />
